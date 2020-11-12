@@ -1,15 +1,19 @@
 package com.example.starwarsapi.starWars;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ListView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.starwarsapi.R;
 import com.example.starwarsapi.models.starWars;
 import com.example.starwarsapi.models.starWarsResposta;
-import com.example.starwarsapi.starWarsService.starWarsService;
-import com.google.gson.Gson;
+import com.example.starwarsapi.starWarsApi.starWarsService;
+import com.example.starwarsapi.adapter.ListaStarWarsAdapter;
+
 
 import java.util.List;
 
@@ -23,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "STARDEX";
     Retrofit retrofit;
+    ListView listViewPeople;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +37,11 @@ public class MainActivity extends AppCompatActivity {
                 .baseUrl("https://swapi.dev/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        obterDados();
+        //obterDados();
     }
 
-    private void obterDados(){
+    private void obterDados(View view){
+
         starWarsService service = retrofit.create(starWarsService.class);
         Call<starWarsResposta> starWarsRespostaCall = service.obterListaStarWars();
         starWarsRespostaCall.enqueue(new Callback<starWarsResposta>() {
@@ -44,10 +50,22 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()){
                     starWarsResposta starWarsResposta = response.body();
                     List<starWars> listaStarWars = starWarsResposta.getResults();
+
+                    ListaStarWarsAdapter p = new ListaStarWarsAdapter(getApplicationContext(), listaStarWars);
+                    listViewPeople = findViewById(R.id.peopleList);
+                    listViewPeople.setAdapter(p);
+
+                    Button b = findViewById(R.id.obterDados);
+
                     for(int i = 0; i < listaStarWars.size(); i++){
                         starWars people = listaStarWars.get(i);
-                        Log.i(TAG, "StarWars: " + people.getName());
+                        Log.i(TAG, "Name: " + people.getName());
+                        Log.i(TAG, "birth_year: " + people.getBirth_year());
+                        Log.i(TAG, "eye_color: " + people.getEye_color());
+                        Log.i(TAG, "height: " + people.getHeight());
+                        Log.i(TAG, "homeworld: " + people.getHomeworld());
                     }
+
                 } else {
                     Log.e(TAG, "onResponse: " + response.errorBody());
                 }

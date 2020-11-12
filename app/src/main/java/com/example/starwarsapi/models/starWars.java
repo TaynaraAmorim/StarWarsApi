@@ -1,6 +1,23 @@
 package com.example.starwarsapi.models;
 
-public class starWars {
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+
+@Data
+@Builder
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+
+public class starWars implements Serializable {
 
    private String name;
    private String birth_year;
@@ -10,6 +27,7 @@ public class starWars {
    private String skin_color;
    private String hair_color;
    private String mass;
+   private String homeworld;
    private String created;
    private String edited;
 
@@ -92,4 +110,8 @@ public class starWars {
     public void setEdited(String edited) {
         this.edited = edited;
     }
+
+    public String getHomeworld() { return homeworld; }
+
+    public void setHomeworld(String homeworld) { this.homeworld = homeworld; }
 }
